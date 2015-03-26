@@ -28,3 +28,33 @@ describe "Board" do
   end
 end
 
+describe "Brick" do
+  let(:brick1) {Brick.new([[0, 0],
+                           [1, 0], [1, 1], [1, 2]])}
+
+  let(:brick2) { Brick.new([[1, 0],
+                            [2, 0], [2, 1], [2, 2]]) }
+
+  it "init" do
+    expect(brick2).to be_an Brick
+    expect(brick2.count).to eq 4
+  end
+
+  it "relative unites" do
+    expect(brick2.relative_unites).to eq [[0, 0],
+                                          [1, 0], [1, 1], [1, 2]]
+  end
+
+  it "show brick well" do
+    expect(brick1.to_s).to eq "X**\n" +
+                              "XXX\n"
+  end
+
+  it "same brick" do
+    brick3 = Brick.new([[0, 0], [0, 1],
+                        [1, 1], [1, 2]])
+
+    expect(brick1).to eq brick2
+    expect(brick1).not_to eq brick3
+  end
+end

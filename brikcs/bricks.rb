@@ -35,3 +35,53 @@ class Board
   end
 end
 
+class Brick
+  ROW    = 0
+  COLUMN = 1
+
+  attr_reader :count, :unites
+
+  def initialize(unites = [])
+    @unites = unites
+    @count  = unites.length
+  end
+
+  def relative_unites
+    @relative_unites ||= unites.map do |unite|
+      [unite[ROW] - min_row, unite[COLUMN] -  min_column]
+    end.sort
+  end
+
+  def min_column
+    @min_column ||= unites.map {|unite| unite[COLUMN]}.min
+  end
+
+  def max_column
+    @mac_column ||= unites.map {|unite| unite[COLUMN]}.max
+  end
+
+  def min_row
+    @min_row ||= unites.map {|unite| unite[ROW]}.min
+  end
+
+  def max_row
+    @max_row ||= unites.map {|unite| unite[ROW]}.max
+  end
+
+  def width
+    @width ||= max_column - min_column + 1
+  end
+
+  def height
+    @height ||= max_row - min_row + 1
+  end
+
+  def to_s
+    board = Board.new(width, height)
+    board.fill_in(relative_unites).to_s
+  end
+
+  def == (other_brick)
+    relative_unites == other_brick.relative_unites
+  end
+end
