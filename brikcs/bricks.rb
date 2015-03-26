@@ -122,9 +122,19 @@ end
 
 class BoardWithBricks < Board
   attr_reader :brick_unites_count, :aviliable_bricks
+
   def initialize(width, height, aviliable_bricks)
     super(width, height)
     @aviliable_bricks   = aviliable_bricks
     @brick_unites_count = aviliable_bricks.first.count
   end
+
+  def full?
+    has_empty_cell = cells.any? do |row|
+      row.any? {|cell| cell == false}
+    end
+
+    not has_empty_cell
+  end
+
 end

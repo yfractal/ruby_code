@@ -95,5 +95,21 @@ describe BoardWithBricks do
   end
 
   it "can find solution"
+  context "full?" do
+    it "full" do
+      board = BoardWithBricks.new(1, 1, [[]])
+      board.fill_in([[0, 0]])
+
+      expect(board.full?).to eq true
+    end
+
+    it "not full" do
+      board = BoardWithBricks.new(2, 2, [[]])
+      board.fill_in([[0, 0]])
+
+      expect(board.full?).to eq false
+    end
+  end
+
   it "can find all solutions(optional)"
 end
