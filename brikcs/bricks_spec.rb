@@ -111,5 +111,12 @@ describe BoardWithBricks do
     end
   end
 
+  it "fisrt_empty_cell" do
+    board = BoardWithBricks.new(2, 2, Brick.all_uniq_bricks(2))
+    expect(board.fisrt_empty_cell).to eq [0, 0]
+
+    board.fill_in([[0, 0]])
+    expect(board.fisrt_empty_cell).to eq [0, 1]
+  end
   it "can find all solutions(optional)"
 end

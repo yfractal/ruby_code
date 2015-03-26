@@ -132,9 +132,16 @@ class BoardWithBricks < Board
   def full?
     has_empty_cell = cells.any? do |row|
       row.any? {|cell| cell == false}
+  def fisrt_empty_cell
+    cells.each_with_index do |row, row_index|
+      row.each_with_index do |cell, column_index|
+        return [row_index, column_index] unless cell
+      end
     end
+  end
 
     not has_empty_cell
+    end
   end
 
 end
