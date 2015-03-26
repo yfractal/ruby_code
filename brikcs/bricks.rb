@@ -14,7 +14,7 @@ class Board
   def initialize(width, height)
     @width  = width
     @height = height
-    @cells = Array.new(height){ |_| Array.new(width){|_| false} }
+    @cells  = Array.new(height){ |_| Array.new(width){|_| false} }
   end
 
   def fill_in(unites)
@@ -86,6 +86,7 @@ class Brick
   end
 
   class << self
+    # todo: refactor
     def all_uniq_bricks(brick_unites_count)
       all_bricks = []
 

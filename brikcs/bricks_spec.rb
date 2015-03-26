@@ -62,18 +62,25 @@ describe "Brick" do
   end
 
   it "all_uniq_bricks" do
-
     bricks = Brick.all_uniq_bricks(2)
-    r = bricks.map {|brick| brick.relative_unites }
-    expect(r).
+    relative_unites = bricks.map {|brick| brick.relative_unites }
+    expect(relative_unites).
       to eq [[[0,0],[1, 0]],
              # X
              # X
              [[0,0], [0, 1]]# XX
             ]
 
-    five_unites_bricks = Brick.all_uniq_bricks(5)
+    three_unites_bricks = Brick.all_uniq_bricks(3)
 
-    expect(five_unites_bricks.count).to eq 42
+    relative_unites = three_unites_bricks.map {|brick| brick.relative_unites }
+
+    expect(relative_unites).
+      to eq [[[0, 0], [1, 0], [2, 0]],
+             [[0, 0], [1, 0], [1, 1]],
+             [[0, 1], [1, 0], [1, 1]],
+             [[0, 0], [0, 1], [1, 1]],
+             [[0, 0], [0, 1], [0, 2]],
+             [[0, 0], [0, 1], [1, 0]]]
   end
 end
