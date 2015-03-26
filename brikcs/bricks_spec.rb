@@ -84,3 +84,16 @@ describe "Brick" do
              [[0, 0], [0, 1], [1, 0]]]
   end
 end
+
+describe BoardWithBricks do
+  it "init with aviliable_bricks" do
+    board = BoardWithBricks.new(3, 3, [[1,2]])
+
+    expect(board).to be_a BoardWithBricks
+    expect(board.aviliable_bricks).to eq [[1,2]]
+    expect(board.brick_unites_count).to eq 2
+  end
+
+  it "can find solution"
+  it "can find all solutions(optional)"
+end

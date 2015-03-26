@@ -119,3 +119,12 @@ class Brick
     end
   end
 end
+
+class BoardWithBricks < Board
+  attr_reader :brick_unites_count, :aviliable_bricks
+  def initialize(width, height, aviliable_bricks)
+    super(width, height)
+    @aviliable_bricks   = aviliable_bricks
+    @brick_unites_count = aviliable_bricks.first.count
+  end
+end
