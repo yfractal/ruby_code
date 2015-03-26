@@ -8,3 +8,30 @@
 
 # an old and uncomplete solution: https://gist.github.com/yfractal/9fd567789ec0ef1534d0
 
+
+class Board
+  attr_reader :height, :width, :cells
+  def initialize(width, height)
+    @width  = width
+    @height = height
+    @cells = Array.new(height){ |_| Array.new(width){|_| false} }
+  end
+
+  def fill_in(unites)
+    unites.each do |unite|
+      row, column = unite
+      cells[row][column] = true
+    end
+
+    self
+  end
+
+  def to_s
+    cells.map do |row|
+      row.map do |cell|
+        cell ? "X" : "*"
+      end.join + "\n"
+    end.join
+  end
+end
+
