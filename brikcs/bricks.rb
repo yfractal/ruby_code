@@ -122,6 +122,7 @@ end
 
 class BoardWithBricks < Board
   attr_reader :brick_unites_count, :aviliable_bricks
+  attr_accessor :cells
 
   def initialize(width, height, aviliable_bricks)
     super(width, height)
@@ -129,8 +130,23 @@ class BoardWithBricks < Board
     @brick_unites_count = aviliable_bricks.first.count
   end
 
+  def fill_in(brick)
+    # brick is unites
+    if brick.class == Array
+      super(brick)
+    else
+      super(brick.unites)
+      aviliable_bricks.delete(brick)
+    end
+  end
+
   def dup
-    BoardWithBricks.new(width, height, aviliable_bricks)
+    new_board = BoardWithBricks.new(width, height, aviliable_bricks)
+
+    new_cells = cells.map {|row| row.dup }
+    new_board.cells = new_cells
+
+    new_board
   end
 
   def fisrt_empty_cell
@@ -169,7 +185,7 @@ class BoardWithBricks < Board
     def possible_full_unites(board)
       full_unites_arr = []
 
-      get_posible_bricks = lambda {|row, column, unites|
+      get_posible_bricks = lambda {|board, row, column, unites|
         if unites.length == board.brick_unites_count
           full_unites_arr.push(unites)
         else
@@ -178,15 +194,16 @@ class BoardWithBricks < Board
 
             new_unites = [].concat(unites).push(next_unite)
 
+            new_board.fill_in(new_unites)
             next_row, next_column = next_unite
-            get_posible_bricks.call(next_row, next_column, new_unites)
+            get_posible_bricks.call(new_board, next_row, next_column, new_unites)
           end
         end
       }
 
       row, column = board.fisrt_empty_cell
 
-      get_posible_bricks.call(row, column, [[row, column]])
+      get_posible_bricks.call(board, row, column, [[row, column]])
 
       full_unites_arr
     end
@@ -201,9 +218,7 @@ class BoardWithBricks < Board
           if board.aviliable_bricks.include? next_brick
             new_board = board.dup
 
-            new_board.fill_in(next_brick.unites)
-
-            new_board.aviliable_bricks.delete(next_brick)
+            new_board.fill_in(next_brick)
 
             return true if has_solution_helper?(new_board)
           end

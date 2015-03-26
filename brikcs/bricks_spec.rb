@@ -97,14 +97,14 @@ describe BoardWithBricks do
   context "full?" do
     it "full" do
       board = BoardWithBricks.new(1, 1, [[]])
-      board.fill_in([[0, 0]])
+      board.cells[0][0] = true # fill in the first cell
 
       expect(board.full?).to eq true
     end
 
     it "not full" do
       board = BoardWithBricks.new(2, 2, [[]])
-      board.fill_in([[0, 0]])
+      board.cells[0][0] = true # fill in the first cell
 
       expect(board.full?).to eq false
     end
@@ -114,17 +114,36 @@ describe BoardWithBricks do
     board = BoardWithBricks.new(2, 2, Brick.all_uniq_bricks(2))
     expect(board.fisrt_empty_cell).to eq [0, 0]
 
-    board.fill_in([[0, 0]])
+    board.cells[0][0] = true # fill in the first cell
     expect(board.fisrt_empty_cell).to eq [0, 1]
   end
 
-  it "can find solution" do
-    expect(BoardWithBricks.has_solution?(1, 1, 2)).to eq false
-    expect(BoardWithBricks.has_solution?(1, 3, 2)).to eq false
+  context "can find solution" do
+    it "has_solution_helper" do
+      bricks = Brick.all_uniq_bricks(3)
 
-    expect(BoardWithBricks.has_solution?(1, 1, 1)).to eq true
-    expect(BoardWithBricks.has_solution?(2, 1, 2)).to eq true
-    expect(BoardWithBricks.has_solution?(1, 2, 2)).to eq true
+      brick = Brick.new([[0, 0], [0, 1], [1, 1]])
+      # XX
+      # *X
+      bricks.delete(brick)
+
+      board = BoardWithBricks.new(2, 3, bricks)
+
+      board.fill_in(brick)
+
+      expect(BoardWithBricks.has_solution_helper?(board)).to eq true
+    end
+    it "integration" do
+      expect(BoardWithBricks.has_solution?(1, 1, 2)).to eq false
+      expect(BoardWithBricks.has_solution?(1, 3, 2)).to eq false
+
+      expect(BoardWithBricks.has_solution?(1, 1, 1)).to eq true
+      expect(BoardWithBricks.has_solution?(2, 1, 2)).to eq true
+      expect(BoardWithBricks.has_solution?(1, 2, 2)).to eq true
+
+      expect(BoardWithBricks.has_solution?(2, 3, 3)).to eq true
+      expect(BoardWithBricks.has_solution?(3, 20, 5)).to eq true
+    end
   end
 
   it "can find all solutions(optional)"
