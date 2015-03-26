@@ -84,4 +84,37 @@ class Brick
   def == (other_brick)
     relative_unites == other_brick.relative_unites
   end
+
+  class << self
+    def all_uniq_bricks(brick_unites_count)
+      all_bricks = []
+
+      all_next_unites = lambda {|current_unites|
+        last_unite = current_unites[-1]
+        possible_next_unites = [[last_unite[ROW] + 1, last_unite[COLUMN]    ],
+                                [last_unite[ROW]    , last_unite[COLUMN] + 1],
+                                [last_unite[ROW] - 1, last_unite[COLUMN]    ],
+                                [last_unite[ROW]    , last_unite[COLUMN] - 1]]
+
+        possible_next_unites.select{ |unite| not current_unites.include?(unite) }
+      }
+
+      generate_brick = lambda {|current_unites, remain_unites_count|
+        if remain_unites_count == 0
+          all_bricks.push(Brick.new(current_unites))
+        else
+          last_unite = current_unites[-1]
+          next_unites = all_next_unites.call(current_unites)
+
+          next_unites.each do |next_unite|
+            generate_brick.call([].concat(current_unites).concat([next_unite]), remain_unites_count - 1)
+          end
+        end
+      }
+
+      generate_brick.call([[0,0]], brick_unites_count - 1)
+
+      all_bricks.uniq {|brick| brick.relative_unites }
+    end
+  end
 end
