@@ -94,7 +94,6 @@ describe BoardWithBricks do
     expect(board.brick_unites_count).to eq 2
   end
 
-  it "can find solution"
   context "full?" do
     it "full" do
       board = BoardWithBricks.new(1, 1, [[]])
@@ -118,5 +117,15 @@ describe BoardWithBricks do
     board.fill_in([[0, 0]])
     expect(board.fisrt_empty_cell).to eq [0, 1]
   end
+
+  it "can find solution" do
+    expect(BoardWithBricks.has_solution?(1, 1, 2)).to eq false
+    expect(BoardWithBricks.has_solution?(1, 3, 2)).to eq false
+
+    expect(BoardWithBricks.has_solution?(1, 1, 1)).to eq true
+    expect(BoardWithBricks.has_solution?(2, 1, 2)).to eq true
+    expect(BoardWithBricks.has_solution?(1, 2, 2)).to eq true
+  end
+
   it "can find all solutions(optional)"
 end

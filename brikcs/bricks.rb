@@ -129,9 +129,10 @@ class BoardWithBricks < Board
     @brick_unites_count = aviliable_bricks.first.count
   end
 
-  def full?
-    has_empty_cell = cells.any? do |row|
-      row.any? {|cell| cell == false}
+  def dup
+    BoardWithBricks.new(width, height, aviliable_bricks)
+  end
+
   def fisrt_empty_cell
     cells.each_with_index do |row, row_index|
       row.each_with_index do |cell, column_index|
@@ -140,8 +141,86 @@ class BoardWithBricks < Board
     end
   end
 
-    not has_empty_cell
+  def has_empty_cell?
+    cells.any? do |row|
+      row.any? {|cell| cell == false}
     end
   end
 
+  def full?
+    not has_empty_cell?
+  end
+
+  class << self
+    def next_posible_unites(board, row, column)
+      unites = []
+      (-1..1).each do |row_diff|
+        (-1..1).each do |column_diff|
+          next_row, next_column = row + row_diff, column + column_diff
+          if (next_row >= 0 and next_column >= 0) and next_row < board.height and next_column < board.width and ! board.cells[next_row][next_column]
+            unites.push([next_row, next_column])
+          end
+        end
+      end
+
+      unites
+    end
+
+    def possible_full_unites(board)
+      full_unites_arr = []
+
+      get_posible_bricks = lambda {|row, column, unites|
+        if unites.length == board.brick_unites_count
+          full_unites_arr.push(unites)
+        else
+          next_posible_unites(board, row, column).each do |next_unite|
+            new_board = board.dup
+
+            new_unites = [].concat(unites).push(next_unite)
+
+            next_row, next_column = next_unite
+            get_posible_bricks.call(next_row, next_column, new_unites)
+          end
+        end
+      }
+
+      row, column = board.fisrt_empty_cell
+
+      get_posible_bricks.call(row, column, [[row, column]])
+
+      full_unites_arr
+    end
+
+    def has_solution_helper?(board)
+      if board.full?
+        return true
+      else
+        possible_full_unites(board).each do |full_unites|
+          next_brick = Brick.new(full_unites)
+
+          if board.aviliable_bricks.include? next_brick
+            new_board = board.dup
+
+            new_board.fill_in(next_brick.unites)
+
+            new_board.aviliable_bricks.delete(next_brick)
+
+            return true if has_solution_helper?(new_board)
+          end
+        end
+      end
+
+      false
+    end
+
+    def init_board(width, height, brick_unites_count)
+      self.new(width, height, Brick.all_uniq_bricks(brick_unites_count))
+    end
+
+    def has_solution?(width, height, brick_unites_count)
+      board = init_board(width, height, brick_unites_count)
+
+      has_solution_helper?(board)
+    end
+  end
 end
